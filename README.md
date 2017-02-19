@@ -1,5 +1,13 @@
 # Spark Notes
 
+I will here document my learnings of Spark.
+
+Sources:
+
+[Learning Spark](http://shop.oreilly.com/product/0636920028512.do)
+
+
+
 ## Key Concepts
 
 Resilient distributed datasets (RDDs): distributed collections that are automatically parallelized across a cluster.
