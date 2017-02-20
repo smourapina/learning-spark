@@ -112,6 +112,79 @@ val result = input.map(_ * _)
 result.persist(StorageLevel.DISK_ONLY)
 ```
 
+
+### RDDs of key/value pairs: Pair RDDs
+
+```scala
+scala> val rdd = sc.parallelize(List((1, 2), (3, 4), (3, 6)))
+rdd: org.apache.spark.rdd.RDD[(Int, Int)] = ParallelCollectionRDD[0] at parallelize at <console>:24
+```
+
+```scala
+scala> rdd.reduceByKey((x, y) => x + y).collect
+res0: Array[(Int, Int)] = Array((1,2), (3,10))
+
+scala> rdd.groupByKey.collect
+res2: Array[(Int, Iterable[Int])] = Array((1,CompactBuffer(2)), (3,CompactBuffer(4, 6)))
+
+scala> rdd.mapValues(_+1).collect
+res3: Array[(Int, Int)] = Array((1,3), (3,5), (3,7))
+
+scala> rdd.flatMapValues(_ to 5).collect
+res4: Array[(Int, Int)] = Array((1,2), (1,3), (1,4), (1,5), (3,4), (3,5))
+
+scala> rdd.keys
+res5: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[6] at keys at <console>:27
+
+scala> rdd.keys.collect
+res6: Array[Int] = Array(1, 3, 3)
+
+scala> rdd.values.collect
+res7: Array[Int] = Array(2, 4, 6)
+
+scala> rdd.sortByKey()
+res11: org.apache.spark.rdd.RDD[(Int, Int)] = ShuffledRDD[11] at sortByKey at <console>:27
+
+scala> rdd.sortByKey().collect
+res12: Array[(Int, Int)] = Array((1,2), (3,4), (3,6))
+
+scala> val other = sc.parallelize(List((3,9)))
+other: org.apache.spark.rdd.RDD[(Int, Int)] = ParallelCollectionRDD[16] at parallelize at <console>:24
+
+scala> rdd.subtractByKey(other).collect
+res15: Array[(Int, Int)] = Array((1,2))
+
+scala> rdd.join(other)
+res16: org.apache.spark.rdd.RDD[(Int, (Int, Int))] = MapPartitionsRDD[20] at join at <console>:29
+
+scala> rdd.join(other).collect
+res17: Array[(Int, (Int, Int))] = Array((3,(4,9)), (3,(6,9)))
+
+scala> rdd.rightOuterJoin(other).collect
+res18: Array[(Int, (Option[Int], Int))] = Array((3,(Some(4),9)), (3,(Some(6),9)))
+
+scala> rdd.leftOuterJoin(other).collect
+res19: Array[(Int, (Int, Option[Int]))] = Array((1,(2,None)), (3,(4,Some(9))), (3,(6,Some(9))))
+
+scala> rdd.cogroup(other).collect
+res20: Array[(Int, (Iterable[Int], Iterable[Int]))] = Array((1,(CompactBuffer(2),CompactBuffer())), (3,(CompactBuffer(4, 6),CompactBuffer(9))))
+```
+
+
+#### Aggregations:
+They are transformations, return another RDD.
+Examples:
+- reduceByKey
+- foldByKey
+```scala
+
+```
+```scala
+
+```
+```scala
+
+```
 ```scala
 
 ```
